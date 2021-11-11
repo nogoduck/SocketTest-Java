@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.Iterator;
 import java.util.Vector;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -73,6 +74,17 @@ public class Main extends Application {
 
 	// 서버의 작동을 중지하는 메소드
 	public void stopServer(){
+		//현재 작동 중인 모든 소켓 종료
+		try{
+			Iterator<Client> iterator = clients.iterator();
+			while(iterator.hasNext()){
+				Client client = iterator.next();
+				client.socket.close();
+				iterator.remove();
+			}
+		}catch (Exception e){
+			e.printStackTrace();
+		}
 
 	}
 	
