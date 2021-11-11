@@ -2,7 +2,9 @@ package application;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.Socket;
+import java.nio.charset.StandardCharsets;
 
 public class Client {
     Socket socket;
@@ -21,6 +23,7 @@ public class Client {
                 try{
                     //클라이언트로부터 내용을 반복적으로 받기 위함
                     while(true){
+                        //다른 컴퓨터로부터 어떠한 내용을 read함수를 사용하여 전달 받음
                         InputStream in = socket.getInputStream();
                         //한번에 512바이트씩 받는다.
                         byte[] buffer = new byte[512];
@@ -57,6 +60,32 @@ public class Client {
 
     //클라이언트로부터 메시지를 전송하는 메소드
     public void send(String message){
-
+        Runnable thread = new Runnable(){
+            @Override
+            public void run() {
+                try{
+                    //메세지를 보내주고자 OutputStream 사용 (java.io로 import)
+                    OutputStream out = socket.getOutputStream();
+                    byte[] buffer = message.getBytes(StandardCharsets.UTF_8);
+                    //buffer에 담긴 내용을 서버에서 클라이언트로 전송
+                    out.write(buffer);
+                    //현재 위치까지 전송을 했다는 것을 알림
+                    out.flush();
+                } catch (Exception e){
+                    try{
+                        System.out.println("[메시지 송신 오류] "
+                        + socket.getRemoteSocketAddress()
+                        + ": " + Thread.currentThread().getName());
+                        //오류가 발생하면 메인함수의 Client에 있는 배열(Vector로 사용함)에서
+                        //해당 클라이언트를 제거해준다.
+                        Main.clients.remove(Client.this);
+                        //오류가 생긴 소켓을 종료한다.
+                        socket.close();
+                    } catch(Exception e2) {
+                        e2.printStackTrace();
+                    }
+                }
+            }
+        };
     }
 }
