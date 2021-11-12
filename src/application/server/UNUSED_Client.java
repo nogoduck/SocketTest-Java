@@ -1,4 +1,4 @@
-package application;
+package application.server;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -6,10 +6,10 @@ import java.io.OutputStream;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
 
-public class Client {
+public class UNUSED_Client {
     Socket socket;
 
-    public Client(Socket socket){
+    public UNUSED_Client(Socket socket){
         this.socket = socket;
         receive();
     }
@@ -35,7 +35,7 @@ public class Client {
                         String message =  new String(buffer, 0, length, "UTF-8");
 
                         //1:n의 통신을 위해 다른 클라이언트에도 정보를 전송해 주는 반복문
-                        for(Client client: Main.clients){
+                        for(UNUSED_Client client: UNUSED_Main.UNUSEDClients){
                             client.send(message);
                         }
 
@@ -46,7 +46,7 @@ public class Client {
                         System.out.println("[메세지 수신 오류] "
                                 + socket.getRemoteSocketAddress()
                                 + ": " + Thread.currentThread().getName());
-                        Main.clients.remove(Client.this);
+                        UNUSED_Main.UNUSEDClients.remove(UNUSED_Client.this);
                         socket.close();
                     } catch (Exception e2){
                         e2.printStackTrace();
@@ -56,7 +56,7 @@ public class Client {
         };
 
         //threadPool에 스레드를 등록해서 안정적으로 관리하게 해준다.
-        Main.threadPool.submit(thread);
+        UNUSED_Main.threadPool.submit(thread);
     }
 
     //클라이언트로부터 메시지를 전송하는 메소드
@@ -79,7 +79,7 @@ public class Client {
                         + ": " + Thread.currentThread().getName());
                         //오류가 발생하면 메인함수의 Client에 있는 배열(Vector로 사용함)에서
                         //해당 클라이언트를 제거해준다.
-                        Main.clients.remove(Client.this);
+                        UNUSED_Main.UNUSEDClients.remove(UNUSED_Client.this);
                         //오류가 생긴 소켓을 종료한다.
                         socket.close();
                     } catch(Exception e2) {
@@ -87,6 +87,6 @@ public class Client {
                     }
                 }
             }};
-        Main.threadPool.submit(thread);
+        UNUSED_Main.threadPool.submit(thread);
     }
 }

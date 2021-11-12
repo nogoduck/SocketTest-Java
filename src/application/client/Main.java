@@ -1,4 +1,4 @@
-package client;
+package application.client;
 
 import javafx.application.Application;
 import javafx.application.Platform;
@@ -10,7 +10,6 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
-import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -87,6 +86,7 @@ public class Main extends Application {
                     //보내고자 하는 정보를 UTF-8로 인코딩해서 보내준다
                     //서버도 UTF-8로 받을 수 있게 되있음
                     byte[] buffer = message.getBytes(StandardCharsets.UTF_8);
+                    System.out.println("message >> " + message);
                     out.write(buffer);
                     //메시지 전송의 끝을 알림
                     out.flush();
