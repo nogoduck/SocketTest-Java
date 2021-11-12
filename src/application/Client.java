@@ -16,7 +16,6 @@ public class Client {
 
     //클라이언트로부터 메시지를 전달 받는 메소드
     public void receive(){
-
         Runnable thread = new Runnable() {
             @Override
             public void run() {
@@ -47,6 +46,8 @@ public class Client {
                         System.out.println("[메세지 수신 오류] "
                                 + socket.getRemoteSocketAddress()
                                 + ": " + Thread.currentThread().getName());
+                        Main.clients.remove(Client.this);
+                        socket.close();
                     } catch (Exception e2){
                         e2.printStackTrace();
                     }
@@ -85,7 +86,7 @@ public class Client {
                         e2.printStackTrace();
                     }
                 }
-            }
-        };
+            }};
+        Main.threadPool.submit(thread);
     }
 }

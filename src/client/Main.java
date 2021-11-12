@@ -2,8 +2,15 @@ package client;
 
 import javafx.application.Application;
 import javafx.application.Platform;
+import javafx.geometry.Insets;
+import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -38,6 +45,7 @@ public class Main extends Application {
                     }
                 }
             }};
+        thread.start();
     }
 
     //클라이언트 프로그램 종료 메서드
@@ -46,7 +54,7 @@ public class Main extends Application {
             if(socket != null && !socket.isClosed()){
                 socket.close();
             }
-        } catch(IOException e){
+        } catch(Exception e){
             e.printStackTrace();
         }
     }
@@ -63,8 +71,6 @@ public class Main extends Application {
                 Platform.runLater(() -> {
                     textArea.appendText(message);
                 });
-
-
             } catch(Exception e) {
                 stopClient();
                 break;
@@ -72,7 +78,7 @@ public class Main extends Application {
         }
     }
     
-    //서버로 메시지를 전송하느 메서드
+    //서버로 메시지를 전송하는 메서드
     public void send(String message){
         Thread thread = new Thread(){
             public void run(){
@@ -87,17 +93,100 @@ public class Main extends Application {
                 } catch(Exception e){
                     stopClient();
                 }
-            }
-        };
+            }};
+        thread.start();
     }
 
     
-    //클라이언트 플그램을 동작시키는 메서드
+    //클라이언트 프로그램을 동작시키는 메서드
     @Override
     public void start(Stage primaryStage) {
+        BorderPane root = new BorderPane();
+        root.setPadding((new Insets(5)));
+        //borderPane 위에 넣을 레이아웃
+        HBox hbox = new HBox();
+        hbox.setSpacing(5);
 
+        TextField userName = new TextField();
+        userName.setPrefWidth(150);
+        userName.setPromptText("닉네임을 입력하세요.");
+        HBox.setHgrow(userName, Priority.ALWAYS);
+
+        TextField IPText = new TextField("127.0.0.1");
+        TextField PORTTEXT = new TextField("5005");
+
+        //윗쪽 레이아웃
+        hbox.getChildren().addAll(userName, IPText, PORTTEXT);
+        root.setTop(hbox);
+
+        //중간
+        textArea = new TextArea();
+        textArea.setEditable(false);
+        root.setCenter(textArea);
+
+        //하단
+        TextField input = new TextField();
+        input.setPrefWidth(Double.MAX_VALUE);
+        input.setDisable(true);
+
+        input.setOnAction(e -> {
+            send(userName.getText() + ": " + input.getText() + "\n");
+            input.setText("");
+            input.requestFocus();
+        });
+
+        Button sendButton = new Button("보내기");
+        sendButton.setDisable(true);
+
+        sendButton.setOnAction(e -> {
+            send(userName.getText() + ": " + input.getText() + "\n");
+            input.setText("");
+            input.requestFocus();
+        });
+
+        Button connectionButton = new Button("접속하기");
+        connectionButton.setOnAction(e -> {
+            if(connectionButton.getText().equals("접속하기")){
+                //기본 포트는 아래와 같이 지정되어 있으며
+                //사용자의 입력이 있을 때 포트 번호가 변경된다.
+                int PORT = 5005;
+                try {
+                    PORT = Integer.parseInt(PORTTEXT.getText());
+                } catch(Exception e2) {
+                    e2.printStackTrace();
+                }
+                startClient(IPText.getText(), PORT);
+                Platform.runLater(() -> {
+                    textArea.appendText("[채팅방 접속]\n");
+                });
+                connectionButton.setText("종료하기");
+                input.setDisable(false);
+                sendButton.setDisable(false);
+                input.requestFocus();
+            } else {
+                stopClient();
+                Platform.runLater(() -> {
+                    textArea.appendText("[채팅방 퇴장]\n");
+                });
+                connectionButton.setText("접속하기");
+                input.setDisable(true);
+                sendButton.setDisable(true);
+            }
+        });
+
+        BorderPane pane = new BorderPane();
+        pane.setLeft(connectionButton);
+        pane.setCenter(input);
+        pane.setRight(sendButton);
+
+        root.setBottom(pane);
+        Scene scene = new Scene(root, 400, 400);
+        primaryStage.setTitle("클라이언트");
+        primaryStage.setScene(scene);
+        primaryStage.setOnCloseRequest(e -> stopClient());
+        primaryStage.show();
+
+        connectionButton.requestFocus();
     }
-
-
     public static void main(String[] args) { launch(args); }
 }
