@@ -5,19 +5,21 @@ import java.util.List;
 
 public class Main {
     public static void main(String[] args) {
-        List<String>  user = new ArrayList<String>();
+        UserInfo userInfo = new UserInfo();
+        List<UserInfo>  userInfoList = new ArrayList<>();
 
-        System.out.println("user = " + user);
+        System.out.println("userInfoList = " + userInfoList);
+        userInfo.setId(1004);
 
-        user.add("1Sens");
-        user.add("2Sens");
-        System.out.println("user = " + user);
-        user.add("3Sens");
-        System.out.println("user = " + user);
+        userInfoList.add(userInfo);
 
-        user.remove("2Sens");
-        System.out.println("user = " + user);
-        user.clear();
-        System.out.println("user = " + user);
+        System.out.println("userInfoList = " + userInfoList);
+
+//        userinfo
+//        userInfoList.add(userInfo.set);
+
+
+
+
     }
 }
