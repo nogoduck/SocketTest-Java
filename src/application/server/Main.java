@@ -111,7 +111,7 @@ public class Main extends Application {
     // UI를 생성하고, 프로그램을 동작시키는 메소드
     @Override
     public void start(Stage primaryStage){
-        startServer("localhost", 5005);
+        startServer("127.0.0.1", 5005);
     }
 
     public static void main(String[] args) {

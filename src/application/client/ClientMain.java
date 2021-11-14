@@ -85,6 +85,7 @@ public class ClientMain extends Application {
     
     //서버로 메시지를 전송하는 메서드
     public void send(String message){
+        System.out.println("보낼 메시지 >> " + message);
         Thread thread = new Thread(){
             public void run(){
                 try {
@@ -107,7 +108,7 @@ public class ClientMain extends Application {
     //클라이언트 프로그램을 동작시키는 메서드
     @Override
     public void start(Stage primaryStage) throws IOException {
-        startClient("localhost", 5005);
+        startClient("127.0.0.1", 5005);
         Parent root = FXMLLoader.load(getClass().getResource("MainUI.fxml"));
 //        Parent root = FXMLLoader.load(MainController.class.getResource("MainUI.fxml"));
         Scene scene = new Scene(root);

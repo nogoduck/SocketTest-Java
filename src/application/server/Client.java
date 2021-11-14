@@ -18,38 +18,35 @@ public class Client extends Main {
 
     //클라이언트로부터 메시지를 전달 받는 메소드
     public void receive(){
-        System.out.println("receive ...1");
         Runnable thread = new Runnable() {
             @Override
             public void run() {
                 try{
-                        System.out.println("receive ...2");
                     //클라이언트로부터 내용을 반복적으로 받기 위함
                     while(true){
                         //다른 컴퓨터로부터 어떠한 내용을 read함수를 사용하여 전달 받음
-                        System.out.println("userList >> " + userList);
-
-                        System.out.println("receive ...3");
                         InputStream in = socket.getInputStream();
                         //한번에 512바이트씩 받는다.
                         byte[] buffer = new byte[512];
                         int length = in.read(buffer);
                         //메세지를 읽다가 오류 처리
                         while(length == -1) throw new IOException();
-                        System.out.println("receive ...4");
                         System.out.println("[메시지 수신 성공] " + socket.getRemoteSocketAddress() + ": "
                                 + Thread.currentThread().getName());
                         //UTF-8로 한글도 처리가능하게 세팅
                         String message =  new String(buffer, 0, length, "UTF-8");
+
                         System.out.println("userList >> " + userList);
                         System.out.println("receive ...5");
                         System.out.println("message >> " + message);
+                        userList.add(message);
                         if(message.contains("#")){
                             System.out.println("receive ...10");
                             message.replaceAll("#", "");
                             userList.add(message);
                         }
                         System.out.println("userList >> " + userList);
+
                         //1:n의 통신을 위해 다른 클라이언트에도 정보를 전송해 주는 반복문
                         for(Client client: Main.clients){
                             client.send(message);

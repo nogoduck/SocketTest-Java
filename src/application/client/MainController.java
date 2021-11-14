@@ -20,6 +20,7 @@ public class MainController extends ClientMain{
         String nickname = tfNickname.getText();
         System.out.println("nickname >> " + nickname);
         clientMain.send("#" + nickname);
+        clientMain.send("GoodJob");
 
         System.out.println(clientMain.userList);
         clientMain.userList.add(nickname);
