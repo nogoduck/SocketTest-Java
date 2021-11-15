@@ -2,6 +2,7 @@ package application.client;
 
 import javafx.application.Application;
 import javafx.application.Platform;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
@@ -24,6 +25,22 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ClientMain extends Application {
+
+
+    @FXML
+    private Button nicknameButton;
+
+    @FXML
+    private TextField tfNickname;
+
+    @FXML
+    void onClickNicknameCheck(ActionEvent e) {
+        System.out.println("Click");
+        send(tfNickname.getText());
+
+    }
+
+
 
     //Client는 Server와 다르게 여러개의 스레드가 계속 생겨날 일이 없기 때문에
     //threadPool을 사용할 필요가 없습니다.

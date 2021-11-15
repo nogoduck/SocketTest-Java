@@ -4,7 +4,6 @@ import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.TextField;
@@ -13,7 +12,7 @@ import javafx.stage.Stage;
 import java.io.*;
 import java.net.Socket;
 
-public class DemoClient extends Application {
+public class DemoClient extends Application  {
     Socket socket;
 
     @FXML
@@ -23,7 +22,6 @@ public class DemoClient extends Application {
     void onClickSubmit(ActionEvent e) throws IOException {
             clientStart();
             send(tfNickname.getText());
-
     }
 
     @Override
@@ -33,10 +31,8 @@ public class DemoClient extends Application {
         primaryStage.setTitle("Client");
         primaryStage.setScene(scene);
         primaryStage.show();
-
     }
 
-    //서버로 요청
     public void send(String str) throws IOException {
         //Client -> Server
             OutputStream out = socket.getOutputStream();
@@ -45,40 +41,33 @@ public class DemoClient extends Application {
             dout.writeUTF(str);
             System.out.println("send >> " +  str);
 
-//            dout.close();
-//            out.close();
-//            socket.close();
-
+            dout.close();
+            out.close();
+            socket.close();
     }
 
-    //서버로부터 응답
     public void receive()  {
         //Server -> Client
-
-            System.out.println("응답 대기중");
+        while(true){
             try{
                 InputStream in = socket.getInputStream();
                 DataInputStream din = new DataInputStream(in);
 
                 Boolean bool = din.readBoolean();
-                System.out.println("Server to String >> " +  bool);
+                System.out.println("response to Server >> " +  bool);
 
                 din.close();
                 in.close();
                 socket.close();
             } catch(Exception e){
-                System.out.println("receive 예외 발생");
-//                break;
+                break;
             }
+        }
 
     }
-
     public void clientStart() throws IOException {
         socket = new Socket("localhost", 5005);
-//        receive();
+        receive(); //주석처리하면 DemoServer에서 처리과정 볼 수 있습니다.
     }
-
-    public static void main(String[] args)  {
-        launch(args);
-    }
+    public static void main(String[] args)  { launch(args); }
 }

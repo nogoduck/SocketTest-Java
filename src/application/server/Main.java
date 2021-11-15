@@ -53,26 +53,23 @@ public class Main extends Application {
         }
 
         //에러가 발생하지 않았다면 클라이언트가 접속할때까지 기다리는 쓰레드
-        Runnable thread = new Runnable() {
-            @Override
-            public void run() {
-                //무한으로 반복함으로써 새로운 클라이언트가 접속할 수 있게 해준다.
-                while(true){
-                    try {
-                        //클라이언트 접속 확인
-                        Socket socket = serverSocket.accept();
-                        //접속을 했다면 클라이언트 배열에 클라이언트 추가
-                        clients.add(new Client(socket));
-                        System.out.println("[클라이언트 접속] "
-                                + socket.getRemoteSocketAddress()
-                                +": " + Thread.currentThread().getName());
-                    } catch (IOException e) {
-                        //서버소켓에 오류가 발생했다면 서버 종료
-                        if(!serverSocket.isClosed()){
-                            stopServer();
-                        }
-                        break;
+        Runnable thread = () -> {
+            //무한으로 반복함으로써 새로운 클라이언트가 접속할 수 있게 해준다.
+            while(true){
+                try {
+                    //클라이언트 접속 확인
+                    Socket socket = serverSocket.accept();
+                    //접속을 했다면 클라이언트 배열에 클라이언트 추가
+                    clients.add(new Client(socket));
+                    System.out.println("[클라이언트 접속] "
+                            + socket.getRemoteSocketAddress()
+                            +": " + Thread.currentThread().getName());
+                } catch (IOException e) {
+                    //서버소켓에 오류가 발생했다면 서버 종료
+                    if(!serverSocket.isClosed()){
+                        stopServer();
                     }
+                    break;
                 }
             }
         };
@@ -96,6 +93,7 @@ public class Main extends Application {
             }
             //서버 소켓 종료
             if(serverSocket != null && !serverSocket.isClosed()){
+                serverSocket.close();
                 serverSocket.close();
             }
             //스레드 풀 종료

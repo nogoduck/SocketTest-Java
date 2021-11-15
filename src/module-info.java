@@ -3,7 +3,8 @@ module Practice {
 	requires javafx.fxml;
 	
 	opens application.client to javafx.graphics, javafx.fxml;
-	opens application.client300 to javafx.graphics, javafx.fxml;
+	opens application.client300 to javafx.fxml, javafx.graphics;
+	opens application.server300 to javafx.fxml, javafx.graphics;
 	opens application.server to javafx.graphics, javafx.fxml;
 	opens application.server2 to javafx.graphics, javafx.fxml;
 
